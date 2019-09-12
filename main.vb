@@ -1,23 +1,32 @@
 ﻿Imports System.IO
 
 Public Class Form1
-    Private arguments = My.Application.CommandLineArgs
-    Dim command As String = arguments(0)
+    Private arguments As ObjectModel.ReadOnlyCollection(Of String) = My.Application.CommandLineArgs
+
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If command = "register" Then
-            register()
-            Application.Exit()
-        ElseIf command = "unregister" Then
-            unregister()
-            Application.Exit()
-        ElseIf command = "block" Or command = "allow" Then
-            Dim exeName As String = arguments(1).Split("\")(arguments(1).Split("\").Length - 1)
-            Me.Text = String.Format("{0} {1}", Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(command), exeName)
-            txtbox_name.Text = exeName.Split(".")(0)
+        If arguments.Count > 0 Then
+            Dim command As String = arguments(0)
+            If command = "register" Then
+                register()
+                Application.Exit()
+            ElseIf command = "unregister" Then
+                unregister()
+                Application.Exit()
+            ElseIf command = "block" Or command = "allow" Then
+                Dim exeName As String = arguments(1).Split("\")(arguments(1).Split("\").Length - 1)
+                Me.Text = String.Format("{0} {1}", Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(command), exeName)
+                txtbox_name.Text = exeName.Split(".")(0)
+            Else
+                MsgBox("Invalid parameter! Program will exit!")
+                Application.Exit()
+            End If
         Else
+            MsgBox("No parameter given. Program will exit!")
             Application.Exit()
         End If
+
+
 
     End Sub
 
@@ -78,9 +87,6 @@ Public Class Form1
 
     End Function
 
-    Private Sub Form1_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
-        Application.Exit()
-    End Sub
 
     Public Sub unregister()
         Try
