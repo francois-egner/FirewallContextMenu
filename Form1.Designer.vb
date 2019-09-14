@@ -99,19 +99,19 @@ Partial Class Form1
         Me.cbox_in.AutoSize = True
         Me.cbox_in.Location = New System.Drawing.Point(81, 68)
         Me.cbox_in.Name = "cbox_in"
-        Me.cbox_in.Size = New System.Drawing.Size(35, 17)
+        Me.cbox_in.Size = New System.Drawing.Size(69, 17)
         Me.cbox_in.TabIndex = 7
-        Me.cbox_in.Text = "In"
+        Me.cbox_in.Text = "Incoming"
         Me.cbox_in.UseVisualStyleBackColor = True
         '
         'cbox_out
         '
         Me.cbox_out.AutoSize = True
-        Me.cbox_out.Location = New System.Drawing.Point(122, 68)
+        Me.cbox_out.Location = New System.Drawing.Point(148, 69)
         Me.cbox_out.Name = "cbox_out"
-        Me.cbox_out.Size = New System.Drawing.Size(43, 17)
+        Me.cbox_out.Size = New System.Drawing.Size(69, 17)
         Me.cbox_out.TabIndex = 8
-        Me.cbox_out.Text = "Out"
+        Me.cbox_out.Text = "Outgoing"
         Me.cbox_out.UseVisualStyleBackColor = True
         '
         'txtbox_name
@@ -156,7 +156,6 @@ Partial Class Form1
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Form1"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "w"
         Me.panel_networks.ResumeLayout(False)
         Me.panel_networks.PerformLayout()
         Me.ResumeLayout(False)

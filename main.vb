@@ -44,6 +44,11 @@ Public Class Form1
             End If
         Next
 
+        'Check if settings are valid
+        If name.Length = 0 Or networks.Count = 0 Or Not cbox_in.Checked Or Not cbox_out.Checked Then
+            MsgBox("Invalid settings! Please check your given information!")
+            Return
+        End If
 
         'If rule should be for incoming connections
         If cbox_in.Checked Then
