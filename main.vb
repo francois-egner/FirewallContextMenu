@@ -22,10 +22,10 @@ Public Class Form1
                 Dim filename As String = arguments(1)
                 If (exist(filename)) Then
                     If deleteRule(filename) Then
-                        MsgBox("Successfully deleted Rule!")
+                        MsgBox("Successfully deleted rule!")
                         Application.Exit()
                     Else
-                        MsgBox("Failed to delete Rule!")
+                        MsgBox("Failed to delete rule!")
                     End If
                 Else
                     MsgBox("There is no rule for this executable set in your firewall... Aborting!")
@@ -65,7 +65,7 @@ Public Class Form1
         End If
 
         If exist(filename) Then
-            If MessageBox.Show("Rule for this executable already exists. Do you want to override it?", "Overwrite rule", MessageBoxButtons.YesNo) = Windows.Forms.DialogResult.Yes Then
+            If MessageBox.Show("Rule for this executable already exists. Do you want to override it?", "Override rule", MessageBoxButtons.YesNo) = Windows.Forms.DialogResult.Yes Then
                 deleteRule(filename)
                 add(filename, networks)
             Else
@@ -108,7 +108,7 @@ Public Class Form1
             .StartInfo.RedirectStandardOutput = True
             .StartInfo.UseShellExecute = False
             .StartInfo.FileName = "netsh"
-            .StartInfo.Arguments = argumentsString 'String.Format(My.Resources.addString, Name, networks, direction, filename, blockOrAllowString)
+            .StartInfo.Arguments = argumentsString
             .Start()
             output = .StandardOutput.ReadToEnd
             .WaitForExit()
@@ -144,9 +144,9 @@ Public Class Form1
     'Delete context menu entries
     Public Sub unregister()
         Try
-            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Block in firewall")
-            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Allow in firewall")
-            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Delete rule")
+            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Block in Windows Firewall")
+            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Allow in Windows Firewall")
+            My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("exefile\shell\Delete from Windows Firewall")
         Catch ex As Exception
             MsgBox("Failed to delete contex menu entries!" & vbCrLf & ex.Message)
         End Try
@@ -156,16 +156,16 @@ Public Class Form1
     Private Sub register()
         Try
             'Create context menu entry for block action
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Delete rule\command", "", Application.ExecutablePath() & " delete " & ControlChars.Quote & "%1" & ControlChars.Quote)
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Delete rule\", "Icon", My.Application.Info.DirectoryPath & "\delete.ico")
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Delete from Windows Firewall\command", "", Application.ExecutablePath() & " delete " & ControlChars.Quote & "%1" & ControlChars.Quote)
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Delete from Windows Firewall\", "Icon", My.Application.Info.DirectoryPath & "\delete.ico")
 
             'Create context menu entry for block action
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Block in firewall\command", "", Application.ExecutablePath() & " block " & ControlChars.Quote & "%1" & ControlChars.Quote)
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Block in firewall\", "Icon", My.Application.Info.DirectoryPath & "\block.ico")
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Block in Windows Firewall\command", "", Application.ExecutablePath() & " block " & ControlChars.Quote & "%1" & ControlChars.Quote)
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Block in Windows Firewall\", "Icon", My.Application.Info.DirectoryPath & "\block.ico")
 
             'Create context menu entry for allow action
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Allow in firewall\command", "", Application.ExecutablePath() & " allow " & ControlChars.Quote & "%1" & ControlChars.Quote)
-            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Allow in firewall\", "Icon", My.Application.Info.DirectoryPath & "\allow.ico")
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Allow in Windows Firewall\command", "", Application.ExecutablePath() & " allow " & ControlChars.Quote & "%1" & ControlChars.Quote)
+            My.Computer.Registry.SetValue("HKEY_CLASSES_ROOT\exefile\shell\Allow in Windows Firewall\", "Icon", My.Application.Info.DirectoryPath & "\allow.ico")
         Catch ex As Exception
             MsgBox("Failed to create contex menu entries!" & vbCrLf & ex.Message)
             'TODO: If second creation failed -> delete first

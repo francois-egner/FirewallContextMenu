@@ -10,8 +10,8 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("Firewall Conext Menu")>
 <Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("FirewallGUI")>
+<Assembly: AssemblyCompany("Francois Egner")>
+<Assembly: AssemblyProduct("Firewall Conext Menu")>
 <Assembly: AssemblyCopyright("Copyright © Francois Egner 2019")>
 <Assembly: AssemblyTrademark("")>
 
