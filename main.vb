@@ -29,6 +29,7 @@ Public Class Form1
                     End If
                 Else
                     MsgBox("There is no rule for this executable set in your firewall... Aborting!")
+                    Application.Exit()
                 End If
 
             Else
