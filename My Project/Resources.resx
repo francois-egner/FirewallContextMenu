@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ruleString" xml:space="preserve">
+  <data name="addString" xml:space="preserve">
     <value>advfirewall firewall add rule name="{0}" profile={1} protocol=any enable=yes DIR={2} program="{3}" Action={4}</value>
+  </data>
+  <data name="deleteString" xml:space="preserve">
+    <value>advfirewall firewall delete rule name="{0}"</value>
+  </data>
+  <data name="existString" xml:space="preserve">
+    <value>advfirewall firewall show rule name="{0}"</value>
   </data>
 </root>

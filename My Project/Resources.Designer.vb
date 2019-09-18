@@ -63,9 +63,27 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Zeichenfolge, die advfirewall firewall add rule name=&quot;{0}&quot; profile={1} protocol=any enable=yes DIR={2} program=&quot;{3}&quot; Action={4} ähnelt.
         '''</summary>
-        Friend ReadOnly Property ruleString() As String
+        Friend ReadOnly Property addString() As String
             Get
-                Return ResourceManager.GetString("ruleString", resourceCulture)
+                Return ResourceManager.GetString("addString", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Zeichenfolge, die advfirewall firewall delete rule name=&quot;{0}&quot; ähnelt.
+        '''</summary>
+        Friend ReadOnly Property deleteString() As String
+            Get
+                Return ResourceManager.GetString("deleteString", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Zeichenfolge, die advfirewall firewall show rule name=&quot;{0}&quot; ähnelt.
+        '''</summary>
+        Friend ReadOnly Property existString() As String
+            Get
+                Return ResourceManager.GetString("existString", resourceCulture)
             End Get
         End Property
     End Module
