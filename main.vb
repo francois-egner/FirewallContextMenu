@@ -2,12 +2,13 @@
 
 Public Class Form1
     Private arguments As ObjectModel.ReadOnlyCollection(Of String) = My.Application.CommandLineArgs
+    Private command As String
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Check if arguments are given/set
         If arguments.Count > 0 Then
-            Dim command As String = arguments(0)
+            command = arguments(0)
             If command = "register" Then
                 register()
                 Application.Exit()
@@ -18,9 +19,19 @@ Public Class Form1
                 Dim exeName As String = arguments(1).Split("\")(arguments(1).Split("\").Length - 1)
                 Me.Text = String.Format("{0} {1}", Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(command), Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(exeName))
             ElseIf command = "delete" Then
-                deleteRule(arguments(1))
-            Else
+                Dim filename As String = arguments(1)
+                If (exist(filename)) Then
+                    If deleteRule(filename) Then
+                        MsgBox("Successfully deleted Rule!")
+                        Application.Exit()
+                    Else
+                        MsgBox("Failed to delete Rule!")
+                    End If
+                Else
+                    MsgBox("There is no rule for this executable set in your firewall... Aborting!")
+                End If
 
+            Else
                 MsgBox("Invalid parameter! Program will exit!")
                 Application.Exit()
             End If
@@ -47,31 +58,47 @@ Public Class Form1
         Next
 
         'Check if settings are valid
-        If name.Length = 0 Or networks.Count = 0 Or Not cbox_in.Checked Or Not cbox_out.Checked Then
+        If Name.Length = 0 Or networks.Count = 0 Or (Not cbox_in.Checked And Not cbox_out.Checked) Then
             MsgBox("Invalid settings! Please check your given information!")
             Return
         End If
 
-        'If rule should be for incoming connections
-        If cbox_in.Checked Then
-            Dim result As Boolean = addApp(filename, String.Join(",", networks), True, filename, Command() = "allow")
-            If Not result Then
-                MsgBox("Failed to add new firewall rule! [INCOMING]")
+        If exist(filename) Then
+            If MessageBox.Show("Rule for this executable already exists. Do you want to override it?", "Overwrite rule", MessageBoxButtons.YesNo) = Windows.Forms.DialogResult.Yes Then
+                deleteRule(filename)
+                add(filename, networks)
+            Else
+                Return
             End If
+        Else
+            add(filename, networks)
         End If
-
-        'If rule should be for outgoing connections
-        If cbox_out.Checked Then
-            Dim result As Boolean = addApp(filename, String.Join(",", networks), False, filename, Command() = "allow")
-            If Not result Then
-                MsgBox("Failed to add new firewall rule [OUTGOING]!")
-            End If
-        End If
-
+        MsgBox("Succesfully added rule to firewall!")
         Application.Exit()
-
     End Sub
 
+    Private Function add(ByVal filename As String, ByVal networks As List(Of String)) As Boolean
+        Try
+            'If rule should be for incoming connections
+            If cbox_in.Checked Then
+                Dim result As Boolean = addApp(filename, String.Join(",", networks), True, filename, command = "allow")
+                If Not result Then
+                    MsgBox("Failed to add new firewall rule! [INCOMING]")
+                End If
+            End If
+            'If rule should be for outgoing connections
+            If cbox_out.Checked Then
+                Dim result As Boolean = addApp(filename, String.Join(",", networks), False, filename, command = "allow")
+                If Not result Then
+                    MsgBox("Failed to add new firewall rule [OUTGOING]!")
+                End If
+            End If
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+
+    End Function
     Private Function netshRequest(ByVal argumentsString As String) As String
         Dim output As String
         Dim p As Process = New Process
@@ -94,17 +121,8 @@ Public Class Form1
     End Function
 
     Private Function deleteRule(ByVal exeName As String) As Boolean
-        If (exist(exeName)) Then
-            Dim resultString As String = netshRequest(String.Format(My.Resources.deleteString, exeName))
-
-            If resultString.Contains("OK.") Then
-                MsgBox("Regel erfolgreich gelöscht!")
-            End If
-        Else
-            MsgBox("There is no rule for this executable set in your firewall... Aborting!")
-
-        End If
-        Application.Exit()
+        Dim resultString As String = netshRequest(String.Format(My.Resources.deleteString, exeName))
+        Return If(resultString.Contains("OK."), True, False)
     End Function
     Private Function exist(ByVal exeName As String) As Boolean
         Dim invalidRuleLineCount As Integer = getRule("").Split(vbCrLf).Count
