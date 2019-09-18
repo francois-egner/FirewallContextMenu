@@ -72,7 +72,7 @@ Public Class Form1
 
     End Sub
 
-    Private Function getRule(ByVal exeName As String) As String
+    Private Function netshRequest(ByVal argumentsString As String) As String
         Dim output As String
         Dim p As Process = New Process
         With p
@@ -80,29 +80,24 @@ Public Class Form1
             .StartInfo.RedirectStandardOutput = True
             .StartInfo.UseShellExecute = False
             .StartInfo.FileName = "netsh"
-            .StartInfo.Arguments = String.Format(My.Resources.existString, exeName)
+            .StartInfo.Arguments = argumentsString 'String.Format(My.Resources.addString, Name, networks, direction, filename, blockOrAllowString)
             .Start()
             output = .StandardOutput.ReadToEnd
             .WaitForExit()
         End With
+
         Return output
+    End Function
+    Private Function getRule(ByVal filename As String) As String
+        Dim resultString As String = netshRequest(String.Format(My.Resources.existString, filename))
+        Return resultString
     End Function
 
     Private Function deleteRule(ByVal exeName As String) As Boolean
         If (exist(exeName)) Then
-            Dim output As String
-            Dim p As Process = New Process
-            With p
-                .StartInfo.CreateNoWindow = True
-                .StartInfo.RedirectStandardOutput = True
-                .StartInfo.UseShellExecute = False
-                .StartInfo.FileName = "netsh"
-                .StartInfo.Arguments = String.Format(My.Resources.deleteString, exeName)
-                .Start()
-                output = .StandardOutput.ReadToEnd
-                .WaitForExit()
-            End With
-            If output.Contains("OK.") Then
+            Dim resultString As String = netshRequest(String.Format(My.Resources.deleteString, exeName))
+
+            If resultString.Contains("OK.") Then
                 MsgBox("Regel erfolgreich gelöscht!")
             End If
         Else
@@ -121,20 +116,9 @@ Public Class Form1
         Dim direction As String = If(inOrOut, "In", "Out")
         Dim blockOrAllowString As String = If(blockOrAllow, "Allow", "Block")
 
-        Dim output As String
-        Dim p As Process = New Process
-        With p
-            .StartInfo.CreateNoWindow = True
-            .StartInfo.RedirectStandardOutput = True
-            .StartInfo.UseShellExecute = False
-            .StartInfo.FileName = "netsh"
-            .StartInfo.Arguments = String.Format(My.Resources.addString, name, networks, direction, filename, blockOrAllowString)
-            .Start()
-            output = .StandardOutput.ReadToEnd
-            .WaitForExit()
-        End With
+        Dim resultString As String = netshRequest(String.Format(My.Resources.addString, name, networks, direction, filename, blockOrAllowString))
 
-        Return (output.Split(vbCrLf)(0) = "OK.")
+        Return (resultString.Split(vbCrLf)(0) = "OK.")
 
     End Function
 
